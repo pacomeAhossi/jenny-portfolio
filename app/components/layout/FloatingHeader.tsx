@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Logo } from "../brand/Logo";
 import { Button } from "../ui/Button";
-import { usePathname } from "next/navigation";
 
 interface NavLink {
   href: string;
@@ -16,8 +15,6 @@ export function FloatingHeader() {
 
   // State pour détecter si le user a scrollé
   const [isScrolled, setIsScrolled] = useState(false);
-
-  const pathname = usePathname();
 
   // Liens de navigation
   const leftNavLinks: NavLink[] = [
@@ -31,6 +28,8 @@ export function FloatingHeader() {
     { href: "#project", label: "Project" },
     { href: "#contact", label: "Contact" },
   ];
+
+  const mobileLinks = [...leftNavLinks, ...rightNavLinks];
   // On détecte le scroll pour changer le style du navbar et le coller au top
   useEffect(() => {
     const handleScroll = () => {
@@ -97,26 +96,36 @@ export function FloatingHeader() {
                   href={link.href}
                   className={`text-inverse-foreground text-lg
                     capitalize
-                    p-2 sm:p-3 lg:px-10 lg:py-5 rounded-full
-                    
-                    transition-colors duration-200 ${
-                      pathname === link.href
-                        ? "bg-primary font-medium"
-                        : "hover:bg-inverse-hover"
-                    } `}
+                    p-2 sm:p-3 lg:px-10 lg:py-5 rounded-full hover:bg-inverse-hover 
+                    transition-colors duration-200  `}
                 >
                   {link.label}
                 </Link>
               ))}
             </div>
 
-            {/* CTA BUTTON - Desktop */}
-            <div className="hidden md:block">
-              <div className="flex items-center justify-center gap-1">
-                <Logo />
-                <p className="text-lg font-sans font-bold text-inverse-foreground">
-                  JCREA
-                </p>
+            {/* Enseigne et identité - Desktop */}
+            <div className="hidden md:block ">
+              <div
+                className="px-6 group flex items-center justify-center gap-2 
+                cursor-pointer relative"
+              >
+                {/* Logo */}
+                <div className="transition-transform duration-500 ease-out group-hover:-translate-x-2">
+                  <Logo />
+                </div>
+                <div className="relative overflow-visible ">
+                  <p className="text-lg font-sans font-bold text-inverse-foreground tracking-widest transition-all duration-300 group-hover:opacity-0 group-hover:translate-y-2">
+                    JCREA
+                  </p>
+                  {/* Texte made by */}
+                  <div className="absolute top-0 left-0 text-inverse-foreground opacity-0 -translate-y-2.5 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+                    <p className="text-xs text-[#eee] ">Made by</p>
+                    <p className="text-base whitespace-nowrap font-semibold">
+                      Pacôme AHOSSI
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -147,7 +156,7 @@ export function FloatingHeader() {
                 p-2 rounded-lg
                 text-inverse-foreground
                 transition-colors
-                focus:outline-none focus:ring-2 focus:ring-primary
+                focus:outline-none focus:ring-2
                 relative z-50
               "
               aria-label={
@@ -190,7 +199,7 @@ export function FloatingHeader() {
             fixed inset-0 bg-darker/50 backdrop-blur-sm
             md:hidden
             z-40
-            animate-in fade-in duration-200
+            duration-200
           "
           onClick={() => setIsMobileMenuOpen(false)}
           aria-hidden="true"
@@ -219,7 +228,7 @@ export function FloatingHeader() {
               className="
                 p-2 rounded-lg
                 text-inverse-background
-                hover:bg-secondary
+                hover:bg-secondary/10
                 transition-colors
               "
               aria-label="Fermer le menu"
@@ -243,24 +252,7 @@ export function FloatingHeader() {
           {/* Navigation mobile */}
           <nav className="flex-1 overflow-y-auto py-6">
             <ul className="space-y-1 px-4">
-              {leftNavLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    onClick={handleLinkClick}
-                    className="
-                      block px-4 py-3 rounded-lg
-                      text-foreground font-medium text-lg
-                      hover:bg-neutral-light
-                      hover:text-primary
-                      transition-colors duration-200
-                    "
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-              {rightNavLinks.map((link) => (
+              {mobileLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -279,18 +271,6 @@ export function FloatingHeader() {
               ))}
             </ul>
           </nav>
-
-          {/* CTA Button mobile */}
-          <div className="mx-4 p-6 border-t border-background">
-            <Button
-              variant="primary"
-              href="#courses"
-              className="w-full bg-primary-normal"
-              onClick={handleLinkClick}
-            >
-              Buy Now
-            </Button>
-          </div>
         </div>
       </div>
     </header>
